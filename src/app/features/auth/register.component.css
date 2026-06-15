@@ -1,0 +1,25 @@
+.auth-page {
+  display: grid;
+  min-height: calc(100vh - 170px);
+  place-items: center;
+}
+
+.auth-card {
+  display: grid;
+  width: min(100%, 460px);
+  gap: 18px;
+  padding: 28px;
+  box-shadow: var(--shadow);
+}
+
+.auth-note {
+  margin: 0;
+  color: var(--muted);
+  text-align: center;
+}
+
+.auth-note a {
+  color: var(--accent-dark);
+  font-weight: 900;
+}
+

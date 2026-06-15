@@ -1,0 +1,83 @@
+.student-block {
+  display: grid;
+  gap: 4px;
+  min-width: 240px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  background: #ffffff;
+}
+
+.student-block span {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.student-block strong {
+  color: var(--accent-dark);
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.mini-row {
+  display: grid;
+  gap: 5px;
+  border-bottom: 1px solid var(--border);
+  padding: 12px 0;
+}
+
+.mini-row:first-of-type {
+  padding-top: 0;
+}
+
+.mini-row:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.mini-row span {
+  font-weight: 800;
+}
+
+.mini-row small {
+  overflow: hidden;
+  color: var(--muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mini-row.done span {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.welcome {
+  display: grid;
+  width: min(680px, 100%);
+  max-width: 100%;
+  gap: 18px;
+  margin: 48px auto;
+  text-align: left;
+}
+
+.welcome-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+@media (max-width: 980px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+}

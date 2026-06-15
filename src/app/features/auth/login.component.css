@@ -1,0 +1,67 @@
+.auth-page {
+  display: grid;
+  min-height: calc(100vh - 170px);
+  place-items: center;
+}
+
+.auth-card {
+  display: grid;
+  width: min(100%, 440px);
+  gap: 18px;
+  padding: 28px;
+  box-shadow: var(--shadow);
+}
+
+.auth-note {
+  margin: 0;
+  color: var(--muted);
+  text-align: center;
+}
+
+.auth-note a {
+  color: var(--accent-dark);
+  font-weight: 900;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+  content: "";
+}
+
+.google-login-area {
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+  min-height: 44px;
+}
+
+.google-button-slot {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.google-status {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.google-status code {
+  font-weight: 900;
+}

@@ -1,0 +1,83 @@
+@if (vm$ | async; as vm) {
+  @if (vm.user && vm.summary) {
+    <section class="page">
+      <div class="page-header">
+        <div>
+          <p class="eyebrow">Dashboard</p>
+          <h1>Xin chào, {{ vm.user.fullName }}</h1>
+          <p class="muted">Tổng quan công việc học tập, ghi chú và deadline của bạn.</p>
+        </div>
+        <div class="student-block">
+          <span>{{ vm.user.email }}</span>
+          <strong>Đang đăng nhập</strong>
+        </div>
+      </div>
+
+      <div class="cards-grid">
+        @for (card of cards(vm.summary); track card.title) {
+          <app-dashboard-card
+            [title]="card.title"
+            [value]="card.value"
+            [description]="card.description"
+            [icon]="card.icon"
+            [link]="card.link">
+          </app-dashboard-card>
+        }
+      </div>
+
+      <div class="grid-3">
+        <section class="panel">
+          <h2>Todo gần đây</h2>
+          @for (todo of vm.summary.recentTodos; track todo.id) {
+            <div class="mini-row" [class.done]="todo.completed">
+              <span>{{ todo.title }}</span>
+              <small>{{ todo.completed ? 'Đã xong' : 'Cần làm' }}</small>
+            </div>
+          } @empty {
+            <p class="empty">Chưa có todo nào.</p>
+          }
+        </section>
+
+        <section class="panel">
+          <h2>Ghi chú mới</h2>
+          @for (note of vm.summary.recentNotes; track note.id) {
+            <div class="mini-row">
+              <span>{{ note.title }}</span>
+              <small>{{ note.content || 'Không có nội dung' }}</small>
+            </div>
+          } @empty {
+            <p class="empty">Chưa có ghi chú nào.</p>
+          }
+        </section>
+
+        <section class="panel">
+          <h2>Deadline sắp tới</h2>
+          @for (deadline of vm.summary.upcomingDeadlines; track deadline.id) {
+            <div class="mini-row">
+              <span>{{ deadline.title }}</span>
+              <small>{{ deadline.dueDate }}</small>
+            </div>
+          } @empty {
+            <p class="empty">Chưa có deadline sắp tới.</p>
+          }
+        </section>
+      </div>
+    </section>
+  } @else {
+    <section class="welcome panel">
+      <p class="eyebrow">StudyTasks</p>
+      <h1>Quản lý việc học hằng ngày</h1>
+      <p class="muted">Đăng nhập hoặc đăng ký để lưu todo, ghi chú và deadline vào MySQL thông qua backend API.</p>
+      @if (error) {
+        <div class="error">{{ error }}</div>
+      }
+      <div class="welcome-actions">
+        <a class="btn btn-primary" routerLink="/login">Đăng nhập</a>
+        <a class="btn btn-secondary" routerLink="/register">Đăng ký</a>
+      </div>
+    </section>
+  }
+} @else {
+  <p class="empty">Đang tải dashboard...</p>
+}
+

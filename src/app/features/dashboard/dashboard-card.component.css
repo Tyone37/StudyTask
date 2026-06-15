@@ -1,0 +1,46 @@
+.dashboard-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+  height: 100%;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 18px;
+  background: #ffffff;
+  transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+
+.dashboard-card:hover {
+  border-color: rgba(15, 159, 150, 0.45);
+  box-shadow: var(--shadow);
+  transform: translateY(-2px);
+}
+
+.card-icon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--surface-muted);
+  color: var(--accent-dark);
+  font-size: 1.25rem;
+}
+
+.card-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.card-title,
+.card-desc {
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+strong {
+  color: var(--text);
+  font-size: 1.85rem;
+  line-height: 1;
+}
+

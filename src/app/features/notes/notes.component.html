@@ -1,0 +1,51 @@
+<section class="page">
+  <div class="page-header">
+    <div>
+      <p class="eyebrow">Notes</p>
+      <h1>Ghi chú học tập</h1>
+      <p class="muted">Lưu ý chính, tài liệu cần đọc hoặc câu hỏi cần hỏi thầy cô.</p>
+    </div>
+  </div>
+
+  <section class="panel">
+    <form class="form-grid" (ngSubmit)="addNote()">
+      <div class="form-row">
+        <label for="note-title">Tiêu đề</label>
+        <input id="note-title" name="title" type="text" placeholder="Ví dụ: Observable trong Angular" [(ngModel)]="title">
+      </div>
+      <div class="form-row">
+        <label for="note-content">Nội dung</label>
+        <textarea id="note-content" name="content" placeholder="Ghi chú ngắn..." [(ngModel)]="content"></textarea>
+      </div>
+      <button class="btn btn-primary" type="submit" [disabled]="!title.trim()">
+        <app-icon name="plus"></app-icon>
+        Thêm ghi chú
+      </button>
+    </form>
+  </section>
+
+  @if (error) {
+    <div class="error">{{ error }}</div>
+  }
+
+  @if (loading) {
+    <p class="empty">Đang tải ghi chú...</p>
+  } @else {
+    <div class="notes-grid">
+      @for (note of notes; track note.id) {
+        <article class="note-card">
+          <div>
+            <h2>{{ note.title }}</h2>
+            <p>{{ note.content || 'Không có nội dung.' }}</p>
+          </div>
+          <button class="btn btn-danger btn-icon" type="button" (click)="deleteNote(note.id)" aria-label="Xóa ghi chú">
+            <app-icon name="trash"></app-icon>
+          </button>
+        </article>
+      } @empty {
+        <p class="empty">Chưa có ghi chú nào.</p>
+      }
+    </div>
+  }
+</section>
+

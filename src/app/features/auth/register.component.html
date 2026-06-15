@@ -1,0 +1,39 @@
+<section class="auth-page">
+  <div class="auth-card">
+    <p class="eyebrow">Tài khoản sinh viên</p>
+    <h1>Đăng ký</h1>
+    <p class="muted">Tạo tài khoản để dữ liệu todo, ghi chú và deadline được lưu theo user.</p>
+
+    @if (error) {
+      <div class="error">{{ error }}</div>
+    }
+
+    <form class="form-grid" (ngSubmit)="submit()">
+      <div class="form-row">
+        <label for="register-name">Họ tên</label>
+        <input id="register-name" name="fullName" type="text" autocomplete="name" [(ngModel)]="fullName">
+      </div>
+
+      <div class="form-row">
+        <label for="register-email">Email</label>
+        <input id="register-email" name="email" type="email" autocomplete="email" [(ngModel)]="email">
+      </div>
+
+      <div class="form-row">
+        <label for="register-password">Mật khẩu</label>
+        <input id="register-password" name="password" type="password" autocomplete="new-password" [(ngModel)]="password">
+      </div>
+
+      <button class="btn btn-primary" type="submit" [disabled]="loading">
+        <app-icon name="user"></app-icon>
+        {{ loading ? 'Đang tạo tài khoản...' : 'Đăng ký' }}
+      </button>
+    </form>
+
+    <p class="auth-note">
+      Đã có tài khoản?
+      <a routerLink="/login">Đăng nhập</a>
+    </p>
+  </div>
+</section>
+

@@ -1,0 +1,46 @@
+.todo-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+  background: #ffffff;
+}
+
+.check-button {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: #ffffff;
+  color: #ffffff;
+}
+
+.completed .check-button {
+  border-color: var(--success);
+  background: var(--success);
+}
+
+.todo-copy {
+  display: grid;
+  gap: 3px;
+}
+
+.todo-copy strong {
+  line-height: 1.25;
+}
+
+.todo-copy span {
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.completed .todo-copy strong {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+

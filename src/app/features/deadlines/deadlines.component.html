@@ -1,0 +1,55 @@
+<section class="page">
+  <div class="page-header">
+    <div>
+      <p class="eyebrow">Deadlines</p>
+      <h1>Deadline học tập</h1>
+      <p class="muted">Theo dõi hạn nộp bài, lịch kiểm tra và nhiệm vụ quan trọng.</p>
+    </div>
+  </div>
+
+  <section class="panel">
+    <form class="deadline-form" (ngSubmit)="addDeadline()">
+      <div class="form-row">
+        <label for="deadline-title">Tên deadline</label>
+        <input id="deadline-title" name="title" type="text" placeholder="Ví dụ: Nộp báo cáo Angular" [(ngModel)]="title">
+      </div>
+      <div class="form-row">
+        <label for="deadline-date">Ngày hạn</label>
+        <input id="deadline-date" name="dueDate" type="date" [(ngModel)]="dueDate">
+      </div>
+      <button class="btn btn-primary" type="submit" [disabled]="!title.trim() || !dueDate">
+        <app-icon name="plus"></app-icon>
+        Thêm deadline
+      </button>
+    </form>
+  </section>
+
+  @if (error) {
+    <div class="error">{{ error }}</div>
+  }
+
+  @if (loading) {
+    <p class="empty">Đang tải deadline...</p>
+  } @else {
+    <div class="deadline-list">
+      @for (deadline of deadlines; track deadline.id) {
+        <article class="deadline-row" [class.done]="deadline.done">
+          <div class="date-box">
+            <span>{{ deadline.dueDate }}</span>
+          </div>
+          <div>
+            <h2>{{ deadline.title }}</h2>
+            <p>{{ deadline.done ? 'Đã hoàn thành' : 'Chưa hoàn thành' }}</p>
+          </div>
+          <button class="btn btn-secondary" type="button" (click)="toggleDone(deadline)">
+            <app-icon name="check"></app-icon>
+            {{ deadline.done ? 'Mở lại' : 'Đánh dấu xong' }}
+          </button>
+        </article>
+      } @empty {
+        <p class="empty">Chưa có deadline nào.</p>
+      }
+    </div>
+  }
+</section>
+

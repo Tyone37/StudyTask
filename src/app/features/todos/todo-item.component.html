@@ -1,0 +1,17 @@
+<article class="todo-item" [class.completed]="todo.completed">
+  <button class="check-button" type="button" (click)="toggle.emit(todo)" [attr.aria-label]="todo.completed ? 'Đánh dấu chưa xong' : 'Đánh dấu hoàn thành'">
+    @if (todo.completed) {
+      <app-icon name="check"></app-icon>
+    }
+  </button>
+
+  <div class="todo-copy">
+    <strong>{{ todo.title }}</strong>
+    <span>{{ todo.completed ? 'Đã hoàn thành' : 'Chưa hoàn thành' }}</span>
+  </div>
+
+  <button class="btn btn-danger btn-icon" type="button" (click)="remove.emit(todo.id)" aria-label="Xóa todo">
+    <app-icon name="trash"></app-icon>
+  </button>
+</article>
+

@@ -1,0 +1,67 @@
+<section class="auth-page">
+  <div class="auth-card">
+    <p class="eyebrow">Tài khoản sinh viên</p>
+    <h1>Đăng nhập</h1>
+    <p class="muted">Vào ứng dụng để xem todo, ghi chú và deadline của riêng bạn.</p>
+
+    @if (error) {
+      <div class="error">{{ error }}</div>
+    }
+
+    <form class="form-grid" autocomplete="off" (ngSubmit)="submit()">
+      <div class="form-row">
+        <label for="login-email">Email</label>
+        <input
+          #emailInput
+          id="login-email"
+          name="email"
+          type="email"
+          autocomplete="off"
+          autocapitalize="none"
+          spellcheck="false"
+          [(ngModel)]="email"
+        >
+      </div>
+
+      <div class="form-row">
+        <label for="login-password">Mật khẩu</label>
+        <input
+          #passwordInput
+          id="login-password"
+          name="password"
+          type="password"
+          autocomplete="new-password"
+          [(ngModel)]="password"
+        >
+      </div>
+
+      <button class="btn btn-primary" type="submit" [disabled]="loading || googleLoading">
+        <app-icon name="login"></app-icon>
+        {{ loading ? 'Đang đăng nhập...' : 'Đăng nhập' }}
+      </button>
+    </form>
+
+    <div class="auth-divider"><span>hoặc</span></div>
+
+    <div class="google-login-area">
+      <div #googleButton class="google-button-slot"></div>
+
+      @if (googleLoading) {
+        <p class="google-status">Đang xác thực Google...</p>
+      } @else if (googleStatus === 'loading') {
+        <p class="google-status">Đang tải Google Login...</p>
+      } @else if (googleStatus === 'not-configured') {
+        <p class="google-status">
+          Google Login chưa được cấu hình. Thêm <code>GOOGLE_CLIENT_ID</code> vào file <code>.env</code>.
+        </p>
+      } @else if (googleStatus === 'unavailable') {
+        <p class="google-status">Không tải được Google Login. Hãy kiểm tra mạng và backend.</p>
+      }
+    </div>
+
+    <p class="auth-note">
+      Chưa có tài khoản?
+      <a routerLink="/register">Đăng ký mới</a>
+    </p>
+  </div>
+</section>

@@ -1,0 +1,51 @@
+<div class="app-shell">
+  <header class="topbar">
+    <a class="brand" routerLink="/">
+      <span class="brand-mark"><app-icon name="check"></app-icon></span>
+      <span>StudyTasks</span>
+    </a>
+
+    <nav class="nav-links" aria-label="Điều hướng chính">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <app-icon name="dashboard"></app-icon>
+        Dashboard
+      </a>
+      <a routerLink="/todos" routerLinkActive="active">
+        <app-icon name="todo"></app-icon>
+        Todo
+      </a>
+      <a routerLink="/notes" routerLinkActive="active">
+        <app-icon name="note"></app-icon>
+        Ghi chú
+      </a>
+      <a routerLink="/deadlines" routerLinkActive="active">
+        <app-icon name="calendar"></app-icon>
+        Deadline
+      </a>
+    </nav>
+
+    <div class="auth-area">
+      @if (currentUser$ | async; as user) {
+        <span class="user-pill">
+          <app-icon name="user"></app-icon>
+          {{ user.fullName }}
+        </span>
+        <button class="btn btn-secondary" type="button" (click)="logout()">
+          <app-icon name="logout"></app-icon>
+          Đăng xuất
+        </button>
+      } @else {
+        <a class="btn btn-secondary" routerLink="/login">
+          <app-icon name="login"></app-icon>
+          Đăng nhập
+        </a>
+        <a class="btn btn-primary" routerLink="/register">Đăng ký</a>
+      }
+    </div>
+  </header>
+
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>
+

@@ -1,0 +1,43 @@
+<section class="page">
+  <div class="page-header">
+    <div>
+      <p class="eyebrow">Todo List</p>
+      <h1>Công việc cần làm</h1>
+      <p class="muted">Thêm, đánh dấu hoàn thành hoặc xóa công việc học tập.</p>
+    </div>
+  </div>
+
+  <section class="panel">
+    <form class="todo-form" (ngSubmit)="addTodo()">
+      <div class="form-row">
+        <label for="todo-title">Tên công việc</label>
+        <input id="todo-title" name="newTitle" type="text" placeholder="Ví dụ: Ôn Angular Router" [(ngModel)]="newTitle">
+      </div>
+      <button class="btn btn-primary" type="submit" [disabled]="!newTitle.trim()">
+        <app-icon name="plus"></app-icon>
+        Thêm todo
+      </button>
+    </form>
+  </section>
+
+  @if (error) {
+    <div class="error">{{ error }}</div>
+  }
+
+  @if (loading) {
+    <p class="empty">Đang tải todo...</p>
+  } @else {
+    <div class="todo-list">
+      @for (todo of todos; track todo.id) {
+        <app-todo-item
+          [todo]="todo"
+          (toggle)="toggleTodo($event)"
+          (remove)="deleteTodo($event)">
+        </app-todo-item>
+      } @empty {
+        <p class="empty">Chưa có công việc nào. Hãy thêm todo đầu tiên.</p>
+      }
+    </div>
+  }
+</section>
+
