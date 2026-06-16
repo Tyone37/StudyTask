@@ -7,7 +7,6 @@ deadline học tập.
 
 - Node.js 24 trở lên.
 - MySQL đang chạy local.
-- MySQL connection tên `Dự án` có user `root` và password `2005`.
 - Google Login cần OAuth Web Client ID dạng `...apps.googleusercontent.com`.
 - Backend Node không gọi trực tiếp theo tên connection trong MySQL Workbench.
   Dự án khóa target bằng `.env`: `DB_CONNECTION_NAME=Dự án`,
