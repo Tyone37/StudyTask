@@ -61,19 +61,6 @@ npm run build      # build Angular
 EXISTS` và các migration an toàn. Script có guard từ chối chạy nếu schema chứa
 `DROP`, `TRUNCATE` hoặc `DELETE FROM`, để tránh xóa nhầm dữ liệu dự án khác.
 
-## Luồng giải thích khi vấn đáp
-
-1. Browser load `src/index.html`.
-2. Angular chạy `src/main.ts`.
-3. `main.ts` bootstrap `AppComponent`, Router và `HttpClient`.
-4. `AppComponent` có navbar và `<router-outlet>`.
-5. Router hiển thị component theo URL.
-6. Component gọi service.
-7. Service dùng `HttpClient`, trả về `Observable`.
-8. Backend Express nhận request và truy vấn MySQL.
-9. Với Google Login, Angular nhận Google ID token, gửi về backend, backend xác
-   thực token rồi phát JWT nội bộ.
-
 ## API chính
 
 - `GET /api/config`
