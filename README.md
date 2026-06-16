@@ -27,27 +27,6 @@ Sau khi chạy:
 - Angular: http://localhost:4200
 - Backend API: http://localhost:3000/api/health
 
-## Cấu hình Google Login
-
-Không dùng app password của Gmail cho Google Login. Chỉ cần OAuth `Web
-application` Client ID.
-
-Trong Google Cloud Console:
-
-1. Tạo hoặc chọn project.
-2. Tạo OAuth client loại `Web application`.
-3. Thêm Authorized JavaScript origins:
-   - `http://localhost`
-   - `http://localhost:4200`
-4. Copy Client ID dạng `...apps.googleusercontent.com`.
-5. Thêm vào `.env`:
-
-```text
-GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
-```
-
-Sau khi đổi `.env`, chạy lại backend và Angular bằng `npm run dev`.
-
 ## Lệnh thường dùng
 
 ```powershell
