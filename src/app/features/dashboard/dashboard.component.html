@@ -43,7 +43,7 @@
           @for (note of vm.summary.recentNotes; track note.id) {
             <div class="mini-row">
               <span>{{ note.title }}</span>
-              <small>{{ note.content || 'Không có nội dung' }}</small>
+              <small>{{ notePreview(note.content) }}</small>
             </div>
           } @empty {
             <p class="empty">Chưa có ghi chú nào.</p>
@@ -80,4 +80,3 @@
 } @else {
   <p class="empty">Đang tải dashboard...</p>
 }
-

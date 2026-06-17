@@ -42,6 +42,44 @@ router.post('/', async (req, res, next) => {
   }
 });
 
+router.patch('/:id', async (req, res, next) => {
+  try {
+    const id = Number(req.params.id);
+    const existing = await getOne('SELECT * FROM notes WHERE id = ? AND user_id = ?', [
+      id,
+      req.user.id
+    ]);
+
+    if (!existing) {
+      return res.status(404).json({ message: 'Không tìm thấy ghi chú.' });
+    }
+
+    const title = req.body.title === undefined
+      ? existing.title
+      : String(req.body.title || '').trim();
+    const content = req.body.content === undefined
+      ? existing.content || ''
+      : String(req.body.content || '').trim();
+
+    if (!title) {
+      return res.status(400).json({ message: 'Tiêu đề ghi chú không được để trống.' });
+    }
+
+    await query(
+      'UPDATE notes SET title = ?, content = ? WHERE id = ? AND user_id = ?',
+      [title, content, id, req.user.id]
+    );
+
+    const row = await getOne('SELECT * FROM notes WHERE id = ? AND user_id = ?', [
+      id,
+      req.user.id
+    ]);
+    return res.json(mapNote(row));
+  } catch (error) {
+    return next(error);
+  }
+});
+
 router.delete('/:id', async (req, res, next) => {
   try {
     await query('DELETE FROM notes WHERE id = ? AND user_id = ?', [
@@ -55,4 +93,3 @@ router.delete('/:id', async (req, res, next) => {
 });
 
 module.exports = router;
-

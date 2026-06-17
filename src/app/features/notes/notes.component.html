@@ -8,19 +8,57 @@
   </div>
 
   <section class="panel">
-    <form class="form-grid" (ngSubmit)="addNote()">
+    <form class="form-grid" (ngSubmit)="saveNote()">
+      @if (editingNoteId) {
+        <div class="edit-banner">
+          <span>Đang sửa ghi chú</span>
+          <button class="link-button" type="button" (click)="cancelEdit()">Hủy sửa</button>
+        </div>
+      }
+
       <div class="form-row">
         <label for="note-title">Tiêu đề</label>
         <input id="note-title" name="title" type="text" placeholder="Ví dụ: Observable trong Angular" [(ngModel)]="title">
       </div>
+
       <div class="form-row">
         <label for="note-content">Nội dung</label>
-        <textarea id="note-content" name="content" placeholder="Ghi chú ngắn..." [(ngModel)]="content"></textarea>
+        <div class="editor-toolbar" aria-label="Thanh định dạng ghi chú">
+          <button class="toolbar-button" type="button" title="In đậm" (mousedown)="$event.preventDefault()" (click)="applyFormat('bold')">
+            <strong>B</strong>
+          </button>
+          <button class="toolbar-button" type="button" title="In nghiêng" (mousedown)="$event.preventDefault()" (click)="applyFormat('italic')">
+            <em>I</em>
+          </button>
+          <button class="toolbar-button" type="button" title="Gạch chân" (mousedown)="$event.preventDefault()" (click)="applyFormat('underline')">
+            <u>U</u>
+          </button>
+          <button class="toolbar-button code-button" type="button" title="Tạo block code" (mousedown)="$event.preventDefault()" (click)="insertCodeBlock()">
+            Code
+          </button>
+        </div>
+        <div
+          #contentEditor
+          id="note-content"
+          class="rich-editor"
+          contenteditable="true"
+          role="textbox"
+          aria-multiline="true"
+          data-placeholder="Ghi chú ngắn hoặc bấm Code để tạo block nhập code..."
+          (input)="syncContent()"
+          (paste)="handlePaste($event)">
+        </div>
       </div>
-      <button class="btn btn-primary" type="submit" [disabled]="!title.trim()">
-        <app-icon name="plus"></app-icon>
-        Thêm ghi chú
-      </button>
+
+      <div class="form-actions">
+        <button class="btn btn-primary" type="submit" [disabled]="!title.trim()">
+          <app-icon name="plus"></app-icon>
+          {{ editingNoteId ? 'Lưu thay đổi' : 'Thêm ghi chú' }}
+        </button>
+        @if (editingNoteId) {
+          <button class="btn btn-secondary" type="button" (click)="cancelEdit()">Hủy</button>
+        }
+      </div>
     </form>
   </section>
 
@@ -33,14 +71,23 @@
   } @else {
     <div class="notes-grid">
       @for (note of notes; track note.id) {
-        <article class="note-card">
+        <article class="note-card" [class.editing]="editingNoteId === note.id">
           <div>
             <h2>{{ note.title }}</h2>
-            <p>{{ note.content || 'Không có nội dung.' }}</p>
+            @if (note.content) {
+              <div class="note-content" [innerHTML]="formatNoteContent(note.content)"></div>
+            } @else {
+              <p class="muted">Không có nội dung.</p>
+            }
           </div>
-          <button class="btn btn-danger btn-icon" type="button" (click)="deleteNote(note.id)" aria-label="Xóa ghi chú">
-            <app-icon name="trash"></app-icon>
-          </button>
+          <div class="note-actions">
+            <button class="btn btn-secondary btn-icon" type="button" (click)="editNote(note)" aria-label="Sửa ghi chú">
+              <app-icon name="note"></app-icon>
+            </button>
+            <button class="btn btn-danger btn-icon" type="button" (click)="deleteNote(note.id)" aria-label="Xóa ghi chú">
+              <app-icon name="trash"></app-icon>
+            </button>
+          </div>
         </article>
       } @empty {
         <p class="empty">Chưa có ghi chú nào.</p>
@@ -48,4 +95,3 @@
     </div>
   }
 </section>
-

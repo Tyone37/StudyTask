@@ -86,6 +86,11 @@ export class DashboardComponent {
     ];
   }
 
+  notePreview(content: string): string {
+    const text = content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    return text || 'Không có nội dung';
+  }
+
   private messageFromError(error: unknown): string {
     if (error instanceof HttpErrorResponse && error.error?.message) {
       return String(error.error.message);

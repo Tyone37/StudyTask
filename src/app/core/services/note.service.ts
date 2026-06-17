@@ -19,8 +19,14 @@ export class NoteService {
     });
   }
 
+  updateNote(id: number, title: string, content: string): Observable<Note> {
+    return this.api.patch<Note, { title: string; content: string }>(`/notes/${id}`, {
+      title,
+      content
+    });
+  }
+
   deleteNote(id: number): Observable<void> {
     return this.api.delete<void>(`/notes/${id}`);
   }
 }
-

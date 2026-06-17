@@ -14,6 +14,11 @@
   background: #ffffff;
 }
 
+.note-card.editing {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(15, 159, 150, 0.14);
+}
+
 .note-card h2 {
   margin-bottom: 8px;
   font-size: 1.05rem;
@@ -25,9 +30,200 @@
   line-height: 1.55;
 }
 
+.edit-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid rgba(15, 159, 150, 0.28);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: #ecfdfb;
+  color: var(--accent-dark);
+  font-weight: 800;
+}
+
+.link-button {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--accent-dark);
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+.form-actions,
+.note-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.note-actions {
+  align-self: start;
+}
+
+.editor-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  background: #f8fafc;
+}
+
+.toolbar-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  min-height: 34px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  background: #ffffff;
+  color: var(--text);
+  font-weight: 800;
+}
+
+.toolbar-button:hover {
+  border-color: var(--accent);
+  color: var(--accent-dark);
+}
+
+.code-button {
+  min-width: 62px;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.85rem;
+}
+
+.rich-editor {
+  width: 100%;
+  min-height: 150px;
+  border: 1px solid var(--border);
+  border-radius: 0 0 8px 8px;
+  padding: 13px;
+  background: #ffffff;
+  color: var(--text);
+  line-height: 1.6;
+  outline: none;
+  overflow-wrap: anywhere;
+}
+
+.rich-editor:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(15, 159, 150, 0.14);
+}
+
+.rich-editor:empty::before {
+  color: var(--muted);
+  content: attr(data-placeholder);
+  pointer-events: none;
+}
+
+:host ::ng-deep .rich-editor pre,
+:host ::ng-deep .note-content pre,
+:host ::ng-deep .code-block {
+  position: relative;
+  margin: 14px 0;
+  border: 1px solid #334155;
+  border-left: 5px solid #22d3ee;
+  border-radius: 8px;
+  padding: 42px 18px 16px;
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.2), rgba(15, 23, 42, 0)),
+    radial-gradient(circle at top right, rgba(34, 211, 238, 0.14), transparent 32%),
+    #0b1120;
+  color: #e2e8f0;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.92rem;
+  font-weight: 500;
+  line-height: 1.7;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  box-shadow:
+    0 18px 36px rgba(15, 23, 42, 0.26),
+    0 4px 10px rgba(15, 23, 42, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+:host ::ng-deep .rich-editor pre::before,
+:host ::ng-deep .note-content pre::before,
+:host ::ng-deep .code-block::before {
+  position: absolute;
+  top: 11px;
+  left: 16px;
+  color: #67e8f9;
+  content: "</> CODE";
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+:host ::ng-deep .rich-editor pre::after,
+:host ::ng-deep .note-content pre::after,
+:host ::ng-deep .code-block::after {
+  position: absolute;
+  top: 15px;
+  right: 16px;
+  width: 42px;
+  height: 8px;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 4px 4px, #ff5f56 0 4px, transparent 4px),
+    radial-gradient(circle at 21px 4px, #ffbd2e 0 4px, transparent 4px),
+    radial-gradient(circle at 38px 4px, #27c93f 0 4px, transparent 4px);
+  content: "";
+}
+
+:host ::ng-deep .rich-editor code,
+:host ::ng-deep .note-content code {
+  font-family: Consolas, "Courier New", monospace;
+}
+
+:host ::ng-deep .language-code {
+  display: block;
+  color: #e2e8f0;
+  tab-size: 2;
+}
+
+:host ::ng-deep .hl-keyword {
+  color: #f472b6;
+  font-weight: 800;
+}
+
+:host ::ng-deep .hl-string {
+  color: #a7f3d0;
+}
+
+:host ::ng-deep .hl-number {
+  color: #fde68a;
+}
+
+:host ::ng-deep .hl-comment {
+  color: #94a3b8;
+  font-style: italic;
+}
+
+.note-content {
+  color: var(--muted);
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.note-content p {
+  margin: 0 0 10px;
+}
+
+.note-content p:last-child {
+  margin-bottom: 0;
+}
+
 @media (max-width: 760px) {
   .notes-grid {
     grid-template-columns: 1fr;
   }
 }
-
