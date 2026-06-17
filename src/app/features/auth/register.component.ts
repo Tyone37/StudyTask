@@ -1,7 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { TimeoutError, finalize, timeout } from 'rxjs';
 
 import { AuthService } from '../../core/auth/auth.service';
 import { IconComponent } from '../../shared/icon.component';
@@ -22,10 +23,15 @@ export class RegisterComponent {
 
   constructor(
     private readonly auth: AuthService,
+    private readonly cdr: ChangeDetectorRef,
     private readonly router: Router
   ) {}
 
   submit(): void {
+    if (this.loading) {
+      return;
+    }
+
     this.error = '';
 
     if (!this.fullName.trim() || !this.email.trim() || this.password.length < 6) {
@@ -34,30 +40,57 @@ export class RegisterComponent {
     }
 
     this.loading = true;
-    this.auth.register({
-      fullName: this.fullName,
-      email: this.email,
-      password: this.password
-    }).subscribe({
-      next: () => {
-        void this.router.navigate(['/']);
-      },
-      error: (error: unknown) => {
-        this.error = this.messageFromError(error);
+    this.auth
+      .register({
+        fullName: this.fullName,
+        email: this.email,
+        password: this.password
+      })
+      .pipe(timeout({ first: 10000 }))
+      .pipe(finalize(() => {
         this.loading = false;
-      },
-      complete: () => {
-        this.loading = false;
-      }
-    });
+        this.cdr.detectChanges();
+      }))
+      .subscribe({
+        next: () => {
+          void this.router.navigate(['/']);
+        },
+        error: (error: unknown) => {
+          this.showError(error);
+        }
+      });
   }
 
   private messageFromError(error: unknown): string {
-    if (error instanceof HttpErrorResponse && error.error?.message) {
-      return String(error.error.message);
+    if (error instanceof TimeoutError) {
+      return 'Không nhận được phản hồi từ server. Hãy thử lại.';
+    }
+
+    if (error instanceof HttpErrorResponse) {
+      const serverMessage = this.serverMessageFromError(error);
+      if (serverMessage) {
+        return serverMessage;
+      }
+
+      if (error.status === 409) {
+        return 'Email đã tồn tại.';
+      }
     }
 
     return 'Không đăng ký được. Hãy kiểm tra backend và MySQL.';
   }
-}
 
+  private showError(error: unknown): void {
+    this.error = this.messageFromError(error);
+    this.cdr.detectChanges();
+  }
+
+  private serverMessageFromError(error: HttpErrorResponse): string {
+    if (typeof error.error === 'string') {
+      return error.error.trim();
+    }
+
+    const body = error.error as { message?: unknown } | null;
+    return typeof body?.message === 'string' ? body.message : '';
+  }
+}

@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { TimeoutError, finalize, timeout } from 'rxjs';
 
 import { AuthService } from '../../core/auth/auth.service';
 import { GoogleCredentialResponse } from '../../core/auth/google-identity.types';
@@ -123,6 +124,10 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
   }
 
   submit(): void {
+    if (this.loading || this.googleLoading) {
+      return;
+    }
+
     this.error = '';
 
     if (!this.email.trim() || !this.password) {
@@ -131,18 +136,21 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
     }
 
     this.loading = true;
-    this.auth.login({ email: this.email, password: this.password }).subscribe({
-      next: () => {
-        void this.router.navigate(['/']);
-      },
-      error: (error: unknown) => {
-        this.error = this.messageFromError(error);
+    this.auth
+      .login({ email: this.email, password: this.password })
+      .pipe(timeout({ first: 10000 }))
+      .pipe(finalize(() => {
         this.loading = false;
-      },
-      complete: () => {
-        this.loading = false;
-      }
-    });
+        this.cdr.detectChanges();
+      }))
+      .subscribe({
+        next: () => {
+          void this.router.navigate(['/']);
+        },
+        error: (error: unknown) => {
+          this.showError(error);
+        }
+      });
   }
 
   private renderGoogleButton(clientId: string): void {
@@ -184,6 +192,10 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
   }
 
   private handleGoogleCredential(response: GoogleCredentialResponse): void {
+    if (this.googleLoading || this.loading) {
+      return;
+    }
+
     if (!response.credential) {
       this.error = 'Không nhận được Google ID token.';
       return;
@@ -191,18 +203,21 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
 
     this.error = '';
     this.googleLoading = true;
-    this.auth.loginWithGoogle(response.credential).subscribe({
-      next: () => {
-        void this.router.navigate(['/']);
-      },
-      error: (error: unknown) => {
-        this.error = this.messageFromError(error);
+    this.auth
+      .loginWithGoogle(response.credential)
+      .pipe(timeout({ first: 10000 }))
+      .pipe(finalize(() => {
         this.googleLoading = false;
-      },
-      complete: () => {
-        this.googleLoading = false;
-      }
-    });
+        this.cdr.detectChanges();
+      }))
+      .subscribe({
+        next: () => {
+          void this.router.navigate(['/']);
+        },
+        error: (error: unknown) => {
+          this.showError(error);
+        }
+      });
   }
 
   private clearLoginFieldsSoon(): void {
@@ -240,10 +255,39 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
   }
 
   private messageFromError(error: unknown): string {
-    if (error instanceof HttpErrorResponse && error.error?.message) {
-      return String(error.error.message);
+    if (error instanceof TimeoutError) {
+      return 'Không nhận được phản hồi từ server. Hãy thử lại.';
+    }
+
+    if (error instanceof HttpErrorResponse) {
+      const serverMessage = this.serverMessageFromError(error);
+      if (serverMessage) {
+        return serverMessage;
+      }
+
+      if (error.status === 401) {
+        return 'Email hoặc mật khẩu không đúng.';
+      }
+
+      if (error.status === 409) {
+        return 'Không thể đăng nhập bằng Google với email này.';
+      }
     }
 
     return 'Không đăng nhập được. Hãy kiểm tra backend, MySQL và cấu hình Google.';
+  }
+
+  private showError(error: unknown): void {
+    this.error = this.messageFromError(error);
+    this.cdr.detectChanges();
+  }
+
+  private serverMessageFromError(error: HttpErrorResponse): string {
+    if (typeof error.error === 'string') {
+      return error.error.trim();
+    }
+
+    const body = error.error as { message?: unknown } | null;
+    return typeof body?.message === 'string' ? body.message : '';
   }
 }

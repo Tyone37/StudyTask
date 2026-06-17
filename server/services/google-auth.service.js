@@ -13,11 +13,11 @@ async function verifyGoogleIdToken(idToken) {
   const token = String(idToken || '').trim();
 
   if (!googleClientId) {
-    throw httpError(503, 'Google Login is not configured. Add GOOGLE_CLIENT_ID to .env.');
+    throw httpError(503, 'Google Login chưa được cấu hình. Thêm GOOGLE_CLIENT_ID vào file .env.');
   }
 
   if (!token) {
-    throw httpError(400, 'Missing Google ID token.');
+    throw httpError(400, 'Thiếu Google ID token.');
   }
 
   try {
@@ -28,11 +28,11 @@ async function verifyGoogleIdToken(idToken) {
     const payload = ticket.getPayload();
 
     if (!payload || !payload.sub || !payload.email) {
-      throw httpError(401, 'Invalid Google ID token payload.');
+      throw httpError(401, 'Google ID token thiếu thông tin hợp lệ.');
     }
 
     if (payload.email_verified !== true && payload.email_verified !== 'true') {
-      throw httpError(401, 'Google account email is not verified.');
+      throw httpError(401, 'Email Google chưa được xác minh.');
     }
 
     return {
@@ -46,7 +46,7 @@ async function verifyGoogleIdToken(idToken) {
       throw error;
     }
 
-    throw httpError(401, 'Invalid Google ID token.');
+    throw httpError(401, 'Google ID token không hợp lệ.');
   }
 }
 
