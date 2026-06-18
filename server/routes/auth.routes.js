@@ -118,36 +118,49 @@ router.post('/google', async (req, res, next) => {
       const existingByEmail = await getOne('SELECT * FROM users WHERE email = ?', [identity.email]);
 
       if (!existingByEmail) {
-        return res.status(409).json({
-          message: 'Email này chưa được đăng ký. Hãy đăng ký bằng email/mật khẩu trước khi đăng nhập bằng Google.'
-        });
-      }
+        try {
+          const result = await query(
+            `INSERT INTO users (full_name, email, password_hash, google_sub, auth_provider, avatar_url)
+             VALUES (?, ?, NULL, ?, 'google', ?)`,
+            [identity.fullName, identity.email, identity.googleSub, identity.avatarUrl]
+          );
+          row = await getOne('SELECT * FROM users WHERE id = ?', [result.insertId]);
+        } catch (error) {
+          if (isDuplicateKeyError(error)) {
+            return res.status(409).json({
+              message: 'Email hoặc tài khoản Google đã được liên kết.'
+            });
+          }
 
-      if (existingByEmail.google_sub && existingByEmail.google_sub !== identity.googleSub) {
-        return res.status(409).json({
-          message: 'Email này đã được liên kết với tài khoản Google khác.'
-        });
-      }
-
-      const provider = existingByEmail.password_hash ? 'both' : 'google';
-      try {
-        await query(
-          `UPDATE users
-           SET google_sub = ?, auth_provider = ?, avatar_url = ?
-           WHERE id = ?`,
-          [identity.googleSub, provider, identity.avatarUrl, existingByEmail.id]
-        );
-      } catch (error) {
-        if (isDuplicateKeyError(error)) {
+          throw error;
+        }
+      } else {
+        if (existingByEmail.google_sub && existingByEmail.google_sub !== identity.googleSub) {
           return res.status(409).json({
-            message: 'Tài khoản Google này đã được liên kết với email khác.'
+            message: 'Email này đã được liên kết với tài khoản Google khác.'
           });
         }
 
-        throw error;
-      }
+        const provider = existingByEmail.password_hash ? 'both' : 'google';
+        try {
+          await query(
+            `UPDATE users
+             SET google_sub = ?, auth_provider = ?, avatar_url = ?
+             WHERE id = ?`,
+            [identity.googleSub, provider, identity.avatarUrl, existingByEmail.id]
+          );
+        } catch (error) {
+          if (isDuplicateKeyError(error)) {
+            return res.status(409).json({
+              message: 'Tài khoản Google này đã được liên kết với email khác.'
+            });
+          }
 
-      row = await getOne('SELECT * FROM users WHERE id = ?', [existingByEmail.id]);
+          throw error;
+        }
+
+        row = await getOne('SELECT * FROM users WHERE id = ?', [existingByEmail.id]);
+      }
     }
 
     const user = mapUser(row);
